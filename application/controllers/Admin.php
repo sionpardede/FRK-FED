@@ -97,65 +97,79 @@ class Admin extends CI_Controller
 
     public function excel()
     {
+        // $data['user'] = $this->db->get_where('user', ['email' => $this->session->userdata('email')])->row_array();
+
+        // $this->load->model('Fed_model');
+        // $this->Fed_model->getAllFed();
+
         $data['user'] = $this->db->get_where('user', ['email' => $this->session->userdata('email')])->row_array();
 
+        $final = $_SESSION["accepted"];
+        $this->db->select('*');
+        $this->db->from('frk');
+        $this->db->join('fed', 'frk.id=fed.frk_id', 'inner');
+        $this->db->where('fed.user_email', $_SESSION["fed"]);
+        $query = $this->db->get();
+        $data['Fed'] = $query->result_array();
         $this->load->model('Fed_model');
-        $this->Fed_model->getAllFed();
+        $this->Fed_model->update_status($final);
 
-        require(APPPATH . 'PHPExcel-1.8/Classes/PHPExcel.php');
-        require(APPPATH . 'PHPExcel-1.8/Classes/PHPExcel/Writer/Excel2007.php');
+        $this->load->view('admin/excel', $data);
 
-        $object = new PHPExcel();
+        // require(APPPATH . 'PHPExcel-1.8/Classes/PHPExcel.php');
+        // require(APPPATH . 'PHPExcel-1.8/Classes/PHPExcel/Writer/Excel2007.php');
 
-        $object->getProperties()->setCreator("Institut Teknologi DEL");
-        $object->getProperties()->setLastModifiedBy("FRK FED IT DEL");
-        $object->getProperties()->setTitle("FED DOSEN");
+        // $object = new PHPExcel();
 
-        $object->setActiveSheetIndex(0);
+        // $object->getProperties()->setCreator("Institut Teknologi DEL");
+        // $object->getProperties()->setLastModifiedBy("FRK FED IT DEL");
+        // $object->getProperties()->setTitle("FED DOSEN");
 
-        $object->getActiveSheet()->setCellValue('A1', 'NO');
-        $object->getActiveSheet()->setCellValue('C1', 'TARGET');
-        $object->getActiveSheet()->setCellValue('H1', 'REALISASI');
-        $object->getActiveSheet()->setCellValue('B2', 'Kegiatan Tugas Jabatan');
-        $object->getActiveSheet()->setCellValue('C2', 'AK');
-        $object->getActiveSheet()->setCellValue('D2', 'Output');
-        $object->getActiveSheet()->setCellValue('E2', 'Mutu');
-        $object->getActiveSheet()->setCellValue('F2', 'Waktu');
-        $object->getActiveSheet()->setCellValue('G2', 'Output');
-        $object->getActiveSheet()->setCellValue('H2', 'Mutu');
-        $object->getActiveSheet()->setCellValue('I2', 'Waktu');
-        $object->getActiveSheet()->setCellValue('J2', 'Nilai Capaian SKP');
+        // $object->setActiveSheetIndex(0);
 
-        $baris = 2;
-        $no = 1;
+        // $object->getActiveSheet()->setCellValue('A1', 'NO');
+        // $object->getActiveSheet()->setCellValue('C1', 'TARGET');
+        // $object->getActiveSheet()->setCellValue('H1', 'REALISASI');
+        // $object->getActiveSheet()->setCellValue('B2', 'Kegiatan Tugas Jabatan');
+        // $object->getActiveSheet()->setCellValue('C2', 'AK');
+        // $object->getActiveSheet()->setCellValue('D2', 'Output');
+        // $object->getActiveSheet()->setCellValue('E2', 'Mutu');
+        // $object->getActiveSheet()->setCellValue('F2', 'Waktu');
+        // $object->getActiveSheet()->setCellValue('G2', 'Output');
+        // $object->getActiveSheet()->setCellValue('H2', 'Mutu');
+        // $object->getActiveSheet()->setCellValue('I2', 'Waktu');
+        // $object->getActiveSheet()->setCellValue('J2', 'Nilai Capaian SKP');
 
-        foreach ($data['Fed'] as $f) {
-            $object->getActiveSheet()->setCellValue('A' . $baris, $no++);
-            $object->getActiveSheet()->setCellValue('A' . $baris, $f->pendidikan);
-            $object->getActiveSheet()->setCellValue('B' . $baris, $f->ak);
-            $object->getActiveSheet()->setCellValue('C' . $baris, $f->output);
-            $object->getActiveSheet()->setCellValue('D' . $baris, $f->mutu);
-            $object->getActiveSheet()->setCellValue('E' . $baris, $f->waktu);
-            $object->getActiveSheet()->setCellValue('F' . $baris, $f->fed_output);
-            $object->getActiveSheet()->setCellValue('G' . $baris, $f->fed_mutu);
-            $object->getActiveSheet()->setCellValue('H' . $baris, $f->fed_waktu);
-            $object->getActiveSheet()->setCellValue('I' . $baris, $f->fed_skp);
+        // $baris = 2;
+        // $no = 1;
 
-            $baris++;
-        }
+        // foreach ($data['Fed'] as $f) {
+        //     $object->getActiveSheet()->setCellValue('A' . $baris, $no++);
+        //     $object->getActiveSheet()->setCellValue('A' . $baris, $f->pendidikan);
+        //     $object->getActiveSheet()->setCellValue('B' . $baris, $f->ak);
+        //     $object->getActiveSheet()->setCellValue('C' . $baris, $f->output);
+        //     $object->getActiveSheet()->setCellValue('D' . $baris, $f->mutu);
+        //     $object->getActiveSheet()->setCellValue('E' . $baris, $f->waktu);
+        //     $object->getActiveSheet()->setCellValue('F' . $baris, $f->fed_output);
+        //     $object->getActiveSheet()->setCellValue('G' . $baris, $f->fed_mutu);
+        //     $object->getActiveSheet()->setCellValue('H' . $baris, $f->fed_waktu);
+        //     $object->getActiveSheet()->setCellValue('I' . $baris, $f->fed_skp);
 
-        $filename = "FED_Dosen" . '.xlsx';
+        //     $baris++;
+        // }
 
-        $object->getActiveSheet()->setTitle("Data FED Dosen");
+        // $filename = "FED_Dosen" . '.xlsx';
 
-        header('Content-type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
-        header('Content-Disposition:attachment; filename="' . $filename . '"');
-        header('Cache-Control: max-age=0');
+        // $object->getActiveSheet()->setTitle("Data FED Dosen");
 
-        $writer = PHPExcel_IOFactory::createwriter($object, 'Excel2007');
-        $writer->save('php://output');
+        // header('Content-type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+        // header('Content-Disposition:attachment; filename="' . $filename . '"');
+        // header('Cache-Control: max-age=0');
 
-        exit;
+        // $writer = PHPExcel_IOFactory::createwriter($object, 'Excel2007');
+        // $writer->save('php://output');
+
+        // exit;
     }
 
     public function cetakLaporan()
