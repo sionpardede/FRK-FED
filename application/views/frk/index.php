@@ -7,22 +7,30 @@
 
 <div class="container-fluid mt-4 mb-5">
     <!-- Page Heading -->
-    <?php
-    if (empty($Frk)) {
-    ?>
-        <div class="d-sm-flex align-items-center justify-content-between mb-4">
-            <h1 class="h3 mb-0 text-gray-800"></h1>
-            <a href="<?= base_url('frk/editfrk'); ?>" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm" style="border-radius: 20px;"><i class="fas fa-plus fa-sm text-white-50"></i> Tambah FRK</a>
-        </div>
-    <?php
-    } else { ?>
-        <div class="d-sm-flex align-items-center justify-content-between mb-4">
-            <a href="<?= base_url('frk/cetakLaporan'); ?>" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm"><i class="fas fa-download fa-sm text-white-50"></i> Eksport PDF</a>
+
+    <div class="d-sm-flex align-items-center justify-content-between mb-4">
+        <?php
+        if (empty($Frk)) {
+        ?>
+            <div class="d-sm-flex align-items-center justify-content-between mb-4">
+                <h1 class="h3 mb-0 text-gray-800"></h1>
+                <a href="<?= base_url('frk/editfrk'); ?>" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm" style="border-radius: 20px;"><i class="fas fa-plus fa-sm text-white-50"></i> Tambah FRK</a>
+            </div>
+        <?php
+        } else { ?>
+            <div class="dropdown">
+                <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    <i class="fas fa-download fa-sm text-white-50"></i> Eksport
+                </button>
+                <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                    <a class="dropdown-item" href="<?= base_url('frk/cetakLaporan'); ?>"><i class="fa fa-file-pdf"> </i> Eksport PDF </a>
+                    <a class="dropdown-item" href="<?= base_url('frk/excel'); ?>""><i class=" fa fa-file-excel"> </i> Eksport EXCEL </a>
+                </div>
+            </div>
             <a href="<?= base_url('frk/editfrk'); ?>" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm" style="border-radius: 20px;"><i class="fas fa-pen fa-sm text-white-50"></i> Edit FRK</a>
-        </div>
-    <?php
-    }
-    ?>
+
+        <?php } ?>
+    </div>
 
     <table class="table table-stripped">
         <thead class="thead-dark">
