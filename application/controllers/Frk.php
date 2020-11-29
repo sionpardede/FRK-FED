@@ -53,6 +53,22 @@ class Frk extends CI_Controller
         $dompdf->stream('laporan_frk.pdf', array("Attachment" => false));
     }
 
+    public function excel()
+    {
+        $data['user'] = $this->db->get_where('user', ['email' => $this->session->userdata('email')])->row_array();
+        $this->load->model('Frk_model');
+        $email = $this->session->userdata('email');
+        $this->db->select('*');
+        $this->db->from('frk');
+        $this->db->join('fed', 'frk.id=fed.frk_id', 'inner');
+        $this->db->where('fed.user_email', $email);
+        $query = $this->db->get();
+        $data['Frk'] = $query->result_array();
+
+
+        $this->load->view('frk/excel', $data);
+    }
+
     public function tambahPendidikan()
     {
         $data['title'] = 'Form Tambah Data Pendidikan';
